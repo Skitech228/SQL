@@ -1,26 +1,29 @@
-﻿using System;
+﻿#region Using derectives
+
+using System;
 using System.Collections.ObjectModel;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using GalaSoft.MvvmLight;
-using SQL.AsyncCommands;
-using SQL.ViewModels.Entity;
 using Prism.Commands;
-using Prism.Mvvm;
+using SQL.AsyncCommands;
 using SQL.Models;
 using SQL.Services.Interfaces;
+using SQL.ViewModels.Entity;
+
+#endregion
 
 namespace SQL.ViewModels
 {
-    class WaitersViewModel:ViewModelBase
+    public class WaitersViewModel : ViewModelBase
     {
         private readonly IWaiterService _waiterService;
+
         //???
         //private readonly ISalesStatisticsPrinter _salesStatisticsPrinter;
         private bool _isEditMode;
-        private ObservableCollection<WaiterEntityViewModel> _sales;
-        private WaiterEntityViewModel _selectedSale;
+        private ObservableCollection<WaiterEntityViewModel> _waiters;
+        private WaiterEntityViewModel _selectedWaiter;
         private DelegateCommand _addSaleCommand;
         private AsyncRelayCommand _removeSaleCommand;
         private AsyncRelayCommand _applySaleChangesCommand;
@@ -31,7 +34,7 @@ namespace SQL.ViewModels
         public WaitersViewModel(IWaiterService salesService)
         {
             _waiterService = salesService;
-            Sales = new ObservableCollection<WaiterEntityViewModel>();
+            Waiters = new ObservableCollection<WaiterEntityViewModel>();
 
             ReloadHotelCategoriesAsync()
                     .Wait();
@@ -39,29 +42,33 @@ namespace SQL.ViewModels
 
         public DelegateCommand AddSaleCommand => _addSaleCommand ??= new DelegateCommand(OnAddSaleCommandExecuted);
 
-        public AsyncRelayCommand RemoveSaleCommand => _removeSaleCommand ??= new AsyncRelayCommand(OnRemoveToyCategoryCommandExecuted,
-                                                                                                   CanManipulateOnSale);
+        public AsyncRelayCommand RemoveSaleCommand =>
+                _removeSaleCommand ??= new AsyncRelayCommand(OnRemoveToyCategoryCommandExecuted,
+                                                             CanManipulateOnSale);
 
-        public AsyncRelayCommand ApplySaleChangesCommand => _applySaleChangesCommand ??= new AsyncRelayCommand(OnApplyToyCategoryChangesCommandExecuted);
+        public AsyncRelayCommand ApplySaleChangesCommand =>
+                _applySaleChangesCommand ??= new AsyncRelayCommand(OnApplyToyCategoryChangesCommandExecuted);
 
-        public DelegateCommand ChangeEditModeCommand => _changeEditModeCommand ??= new DelegateCommand(OnChangeEditModeCommandExecuted,
-                                                                                                       CanManipulateOnSale)
-                                                                .ObservesProperty(() => SelectedSale);
+        public DelegateCommand ChangeEditModeCommand =>
+                _changeEditModeCommand ??= new DelegateCommand(OnChangeEditModeCommandExecuted,
+                                                               CanManipulateOnSale)
+                        .ObservesProperty(() => SelectedWaiter);
 
-        public AsyncRelayCommand ReloadSalesCommand => _reloadSalesCommand ??= new AsyncRelayCommand(ReloadHotelCategoriesAsync);
+        public AsyncRelayCommand ReloadSalesCommand =>
+                _reloadSalesCommand ??= new AsyncRelayCommand(ReloadHotelCategoriesAsync);
 
-        public ObservableCollection<WaiterEntityViewModel> Sales
+        public ObservableCollection<WaiterEntityViewModel> Waiters
         {
-            get => _sales;
-            set => Set(ref _sales, value);
+            get => _waiters;
+            set => Set(ref _waiters, value);
         }
 
-        public WaiterEntityViewModel SelectedSale
+        public WaiterEntityViewModel SelectedWaiter
         {
-            get => _selectedSale;
+            get => _selectedWaiter;
             set
             {
-                Set(ref _selectedSale, value);
+                Set(ref _selectedWaiter, value);
                 RemoveSaleCommand.RaiseCanExecuteChanged();
             }
         }
@@ -72,40 +79,38 @@ namespace SQL.ViewModels
             set => Set(ref _isEditMode, value);
         }
 
-        private bool CanManipulateOnSale() =>
-            SelectedSale is not null;
+        private bool CanManipulateOnSale() => SelectedWaiter is not null;
 
-        private void OnChangeEditModeCommandExecuted() =>
-            IsEditMode = !IsEditMode;
+        private void OnChangeEditModeCommandExecuted() => IsEditMode = !IsEditMode;
 
         private void OnAddSaleCommandExecuted()
         {
-            Sales.Insert(0,
-                         new WaiterEntityViewModel(new Waiter
-                         {
-                             Name = "Unnamed",
-                             Active = false
-                         }));
+            Waiters.Insert(0,
+                           new WaiterEntityViewModel(new Waiter
+                                                     {
+                                                             Name = String.Empty,
+                                                             Active = false
+                                                     }));
 
-            SelectedSale = Sales.First();
+            SelectedWaiter = Waiters.First();
         }
 
         private async Task OnRemoveToyCategoryCommandExecuted()
         {
-            if (SelectedSale.Entity.Id == 0)
-                Sales.Remove(SelectedSale);
+            if (SelectedWaiter.Entity.Id == 0)
+                Waiters.Remove(SelectedWaiter);
 
-            await _waiterService.RemoveWaiterAsync(SelectedSale.Entity);
-            Sales.Remove(SelectedSale);
-            SelectedSale = null;
+            await _waiterService.RemoveWaiterAsync(SelectedWaiter.Entity);
+            Waiters.Remove(SelectedWaiter);
+            SelectedWaiter = null;
         }
 
         private async Task OnApplyToyCategoryChangesCommandExecuted()
         {
-            if (SelectedSale.Entity.Id == 0)
-                await _waiterService.AddWaiterAsync(SelectedSale.Entity);
+            if (SelectedWaiter.Entity.Id == 0)
+                await _waiterService.AddWaiterAsync(SelectedWaiter.Entity);
             else
-                await _waiterService.UpdateWaiterAsync(SelectedSale.Entity);
+                await _waiterService.UpdateWaiterAsync(SelectedWaiter.Entity);
 
             await ReloadHotelCategoriesAsync();
         }
@@ -113,10 +118,10 @@ namespace SQL.ViewModels
         private async Task ReloadHotelCategoriesAsync()
         {
             var dbSales = await _waiterService.GetAllWaitersAsync();
-            Sales.Clear();
+            Waiters.Clear();
 
             foreach (var sale in dbSales)
-                Sales.Add(new WaiterEntityViewModel(sale));
+                Waiters.Add(new WaiterEntityViewModel(sale));
         }
     }
 }

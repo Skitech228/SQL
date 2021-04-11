@@ -1,36 +1,32 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿#region Using derectives
+
 using GalaSoft.MvvmLight;
 using SQL.Models;
 
+#endregion
+
 namespace SQL.ViewModels.Entity
 {
-    class WaiterEntityViewModel:ViewModelBase
+    public class WaiterEntityViewModel : ViewModelBase
     {
         public WaiterEntityViewModel(Waiter waiter) => Entity = waiter;
+
         #region waiterEntity Property
 
         /// <summary>
-        /// Private member backing variable for <see cref="MyProperty" />
+        ///     Private member backing variable for <see cref="MyProperty" />
         /// </summary>
-        private Waiter waiterEntity = null;
+        private Waiter waiterEntity;
 
         /// <summary>
-        /// Gets and sets The property's value
+        ///     Gets and sets The property's value
         /// </summary>
         public Waiter Entity
         {
-            get
-            {
-                return waiterEntity;
-            }
+            get => waiterEntity;
             set { Set(() => Entity, ref waiterEntity, value); }
         }
 
         #endregion
-
     }
 }

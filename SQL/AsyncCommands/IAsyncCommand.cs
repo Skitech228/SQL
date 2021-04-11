@@ -1,13 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿#region Using derectives
+
 using System.Threading.Tasks;
 using System.Windows.Input;
 
+#endregion
+
 namespace SQL.AsyncCommands
 {
-    interface IAsyncCommand:ICommand
+    internal interface IAsyncCommand : ICommand
     {
         Task ExecuteAsync();
 

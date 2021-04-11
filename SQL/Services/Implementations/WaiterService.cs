@@ -1,15 +1,16 @@
-﻿using System;
+﻿#region Using derectives
+
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using SQL.Models;
 using SQL.Services.Interfaces;
 
+#endregion
+
 namespace SQL.Services.Implementations
 {
-    class WaiterService:IWaiterService
+    internal class WaiterService : IWaiterService
     {
         private readonly HotelContext _context;
 
@@ -48,8 +49,8 @@ namespace SQL.Services.Implementations
 
         /// <inheritdoc />
         public async Task<IEnumerable<Waiter>> GetAllWaitersAsync() => await _context.Waiters
-                                                                                .Include(x => _context.PreOrders)
-                                                                                .ToListAsync();
+                                                                               .Include(x => _context.PreOrders)
+                                                                               .ToListAsync();
 
         #endregion
     }

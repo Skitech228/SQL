@@ -1,21 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿#region Using derectives
+
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
+
+#endregion
 
 namespace SQL
 {
     /// <summary>
-    /// Логика взаимодействия для AdminWindow.xaml
+    ///     Логика взаимодействия для AdminWindow.xaml
     /// </summary>
     public partial class AdminWindow : Window
     {

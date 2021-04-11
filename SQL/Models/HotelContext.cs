@@ -1,20 +1,21 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿#region Using derectives
+
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Sqlite.Metadata.Internal;
+
+#endregion
 
 namespace SQL.Models
 {
-    public class HotelContext:DbContext
+    public class HotelContext : DbContext
     {
-        public HotelContext() : base()
+        public HotelContext()
         {
             Database.EnsureCreated();
         }
 
+        public DbSet<PreOrder> PreOrders { get; set; }
+        public DbSet<Waiter> Waiters { get; set; }
+        public DbSet<Visitor> Visitors { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
@@ -24,10 +25,5 @@ namespace SQL.Models
         #region Overrides of DbContext
 
         #endregion
-
-        public DbSet<PreOrder> PreOrders { get; set; }
-        public DbSet<Waiter> Waiters { get; set; }
-        public DbSet<Visitor> Visitors { get; set; }
-
     }
 }

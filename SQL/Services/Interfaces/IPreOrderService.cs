@@ -1,13 +1,14 @@
-﻿using System;
+﻿#region Using derectives
+
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using SQL.Models;
 
+#endregion
+
 namespace SQL.Services.Interfaces
 {
-    interface IPreOrderService
+    public interface IPreOrderService
     {
         Task<bool> AddPreOrderAsync(PreOrder customer);
 
@@ -17,6 +18,6 @@ namespace SQL.Services.Interfaces
 
         Task<PreOrder> GetByIdAsync(int id);
 
-        Task<IEnumerable<PreOrder>> GetAllPreOrdersAsync();      
+        Task<IEnumerable<PreOrder>> GetAllPreOrdersAsync();
     }
 }

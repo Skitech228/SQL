@@ -1,13 +1,14 @@
-﻿using System;
+﻿#region Using derectives
+
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using SQL.Models;
 
+#endregion
+
 namespace SQL.Services.Interfaces
 {
-    interface IWaiterService
+    public interface IWaiterService
     {
         Task<bool> AddWaiterAsync(Waiter customer);
 

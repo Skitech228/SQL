@@ -1,19 +1,21 @@
-﻿using System;
+﻿#region Using derectives
+
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using SQL.Models;
 using SQL.Services.Interfaces;
 
+#endregion
+
 namespace SQL.Services.Implementations
 {
-    class PreOrderService:IPreOrderService
+    internal class PreOrderService : IPreOrderService
     {
-        private HotelContext _context;
+        private readonly HotelContext _context;
 
-        PreOrderService(HotelContext context) => _context = context;
+        private PreOrderService(HotelContext context) => _context = context;
+
         #region Implementation of IPreOrderService
 
         /// <inheritdoc />
@@ -46,10 +48,9 @@ namespace SQL.Services.Implementations
         public async Task<PreOrder> GetByIdAsync(int id) => await _context.PreOrders.FindAsync(id);
 
         /// <inheritdoc />
-        public async Task<IEnumerable<PreOrder>> GetAllPreOrdersAsync() =>
-                await _context.PreOrders
-                        .Include(x => _context.PreOrders)
-                        .ToListAsync();
+        public async Task<IEnumerable<PreOrder>> GetAllPreOrdersAsync() => await _context.PreOrders
+                                                                                   .Include(x => _context.PreOrders)
+                                                                                   .ToListAsync();
 
         #endregion
     }

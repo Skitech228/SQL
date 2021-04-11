@@ -1,14 +1,15 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿#region Using derectives
+
+using System;
 using System.Threading.Tasks;
+
+#endregion
 
 namespace SQL.Extensions
 {
     public static class TaskExtension
     {
-        public async static void FireAndForgetSafeAsync(this Task task, IErrorHandler handler = null)
+        public static async void FireAndForgetSafeAsync(this Task task, IErrorHandler handler = null)
         {
             try
             {

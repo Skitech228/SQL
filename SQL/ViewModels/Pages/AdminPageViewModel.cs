@@ -1,30 +1,43 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Dynamic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows;
+﻿#region Using derectives
+
 using GalaSoft.MvvmLight;
-using Microsoft.EntityFrameworkCore;
-using SQL.Models;
+using SQL.Services.Interfaces;
+
+#endregion
 
 namespace SQL.ViewModels.Pages
 {
-    public class AdminViewModel : ViewModelBase
+    public class AdminPageViewModel : ViewModelBase
     {
+        private PreOrdersViewModel _preOrders;
+        private VisitorsViewModel _visitors;
+        private WaitersViewModel _waiters;
 
-        private readonly HotelContext _context;
-
-        public ObservableCollection<Waiter> Waiters { get; }
-
-        public AdminViewModel(HotelContext context)
+        public AdminPageViewModel(IPreOrderService preOrder,
+                                  IVisitorService visitor,
+                                  IWaiterService waiter)
         {
-            _context = context;
-            _context.Waiters.Load();
-            Waiters = new ObservableCollection<Waiter>(_context.Waiters);
+            PreOrdersContext = new PreOrdersViewModel(preOrder);
+            VisitorsContext = new VisitorsViewModel(visitor);
+            WaitersContext = new WaitersViewModel(waiter);
         }
 
+        public PreOrdersViewModel PreOrdersContext
+        {
+            get => _preOrders;
+            set { Set(() => PreOrdersContext, ref _preOrders, value); }
+        }
+
+        public VisitorsViewModel VisitorsContext
+        {
+            get => _visitors;
+            set { Set(() => VisitorsContext, ref _visitors, value); }
+        }
+
+        public WaitersViewModel WaitersContext
+        {
+            get => _waiters;
+            set { Set(() => WaitersContext, ref _waiters, value); }
+        }
     }
 }
