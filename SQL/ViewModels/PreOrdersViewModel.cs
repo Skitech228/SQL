@@ -17,50 +17,45 @@ namespace SQL.ViewModels
 {
     public class PreOrdersViewModel : ViewModelBase
     {
-        private readonly IPreOrderService _waiterService;
+        private readonly IPreOrderService _preOrderService;
 
         //???
         //private readonly ISalesStatisticsPrinter _salesStatisticsPrinter;
         private bool _isEditMode;
-        private ObservableCollection<PreOrderEntityViewModel> _preOrder;
+        private ObservableCollection<PreOrderEntityViewModel> _preOrders;
         private PreOrderEntityViewModel _selectedPreOrder;
-        private DelegateCommand _addSaleCommand;
-        private AsyncRelayCommand _removeSaleCommand;
-        private AsyncRelayCommand _applySaleChangesCommand;
+        private DelegateCommand _addPreOrderCommand;
+        private AsyncRelayCommand _removePreOrderCommand;
+        private AsyncRelayCommand _applyPreOrderChangesCommand;
         private DelegateCommand _changeEditModeCommand;
-        private AsyncRelayCommand _reloadSalesCommand;
-        private AsyncRelayCommand _writeSalesStatisticsCommand;
+        private AsyncRelayCommand _reloadPreOrderCommand;
 
-        public PreOrdersViewModel(IPreOrderService salesService)
+        public PreOrdersViewModel(IPreOrderService preOrdersService)
         {
-            _waiterService = salesService;
-            PreOrder = new ObservableCollection<PreOrderEntityViewModel>();
+            _preOrderService = preOrdersService;
+            PreOrders = new ObservableCollection<PreOrderEntityViewModel>();
 
             ReloadHotelCategoriesAsync()
                     .Wait();
         }
 
-        public DelegateCommand AddSaleCommand => _addSaleCommand ??= new DelegateCommand(OnAddPreOrderCommandExecuted);
+        public DelegateCommand AddPreOrderCommand => _addPreOrderCommand ??= new DelegateCommand(OnAddPreOrderCommandExecuted);
 
-        public AsyncRelayCommand RemoveSaleCommand =>
-                _removeSaleCommand ??= new AsyncRelayCommand(OnRemoveHotelCategoryCommandExecuted,
-                                                             CanManipulateOnSale);
+        public AsyncRelayCommand RemovePreOrderCommand => _removePreOrderCommand ??= new AsyncRelayCommand(OnRemoveHotelCategoryCommandExecuted,
+                                                                                                       CanManipulateOnSale);
 
-        public AsyncRelayCommand ApplySaleChangesCommand =>
-                _applySaleChangesCommand ??= new AsyncRelayCommand(OnApplyHotelCategoryChangesCommandExecuted);
+        public AsyncRelayCommand ApplyPreOrderChangesCommand => _applyPreOrderChangesCommand ??= new AsyncRelayCommand(OnApplyHotelCategoryChangesCommandExecuted);
 
-        public DelegateCommand ChangeEditModeCommand =>
-                _changeEditModeCommand ??= new DelegateCommand(OnChangeEditModeCommandExecuted,
-                                                               CanManipulateOnSale)
-                        .ObservesProperty(() => SelectedPreOrder);
+        public DelegateCommand ChangeEditModeCommand => _changeEditModeCommand ??= new DelegateCommand(OnChangeEditModeCommandExecuted,
+                                                                                                       CanManipulateOnSale)
+                                                                .ObservesProperty(() => SelectedPreOrder);
 
-        public AsyncRelayCommand ReloadSalesCommand =>
-                _reloadSalesCommand ??= new AsyncRelayCommand(ReloadHotelCategoriesAsync);
+        public AsyncRelayCommand ReloadPreOrdersCommand => _reloadPreOrderCommand ??= new AsyncRelayCommand(ReloadHotelCategoriesAsync);
 
-        public ObservableCollection<PreOrderEntityViewModel> PreOrder
+        public ObservableCollection<PreOrderEntityViewModel> PreOrders
         {
-            get => _preOrder;
-            set => Set(ref _preOrder, value);
+            get => _preOrders;
+            set => Set(ref _preOrders, value);
         }
 
         public PreOrderEntityViewModel SelectedPreOrder
@@ -69,7 +64,7 @@ namespace SQL.ViewModels
             set
             {
                 Set(ref _selectedPreOrder, value);
-                RemoveSaleCommand.RaiseCanExecuteChanged();
+                RemovePreOrderCommand.RaiseCanExecuteChanged();
             }
         }
 
@@ -85,7 +80,7 @@ namespace SQL.ViewModels
 
         private void OnAddPreOrderCommandExecuted()
         {
-            PreOrder.Insert(0,
+            PreOrders.Insert(0,
                             new PreOrderEntityViewModel(new PreOrder
                                                         {
                                                                 VisitorName = String.Empty,
@@ -96,36 +91,36 @@ namespace SQL.ViewModels
                                                                 TableNum = 0
                                                         }));
 
-            SelectedPreOrder = PreOrder.First();
+            SelectedPreOrder = PreOrders.First();
         }
 
         private async Task OnRemoveHotelCategoryCommandExecuted()
         {
             if (SelectedPreOrder.Entity.Id == 0)
-                PreOrder.Remove(SelectedPreOrder);
+                PreOrders.Remove(SelectedPreOrder);
 
-            await _waiterService.RemovePreOrderAsync(SelectedPreOrder.Entity);
-            PreOrder.Remove(SelectedPreOrder);
+            await _preOrderService.RemovePreOrderAsync(SelectedPreOrder.Entity);
+            PreOrders.Remove(SelectedPreOrder);
             SelectedPreOrder = null;
         }
 
         private async Task OnApplyHotelCategoryChangesCommandExecuted()
         {
             if (SelectedPreOrder.Entity.Id == 0)
-                await _waiterService.AddPreOrderAsync(SelectedPreOrder.Entity);
+                await _preOrderService.AddPreOrderAsync(SelectedPreOrder.Entity);
             else
-                await _waiterService.UpdatePreOrderAsync(SelectedPreOrder.Entity);
+                await _preOrderService.UpdatePreOrderAsync(SelectedPreOrder.Entity);
 
             await ReloadHotelCategoriesAsync();
         }
 
         private async Task ReloadHotelCategoriesAsync()
         {
-            var dbSales = await _waiterService.GetAllPreOrdersAsync();
-            PreOrder.Clear();
+            var dbPreOrders = await _preOrderService.GetAllPreOrdersAsync();
+            PreOrders.Clear();
 
-            foreach (var sale in dbSales)
-                PreOrder.Add(new PreOrderEntityViewModel(sale));
+            foreach (var preOrder in dbPreOrders)
+                PreOrders.Add(new PreOrderEntityViewModel(preOrder));
         }
     }
 }

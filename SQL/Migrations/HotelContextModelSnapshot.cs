@@ -18,7 +18,7 @@ namespace SQL.Migrations
             modelBuilder
                     .HasAnnotation("ProductVersion", "6.0.0-preview.3.21201.2");
 
-            modelBuilder.Entity("SQL.Models.PreOrder", b =>
+            modelBuilder.Entity("SQL.Models.PreOrders", b =>
                                                        {
                                                            b.Property<int>("Id")
                                                                    .ValueGeneratedOnAdd()
@@ -89,7 +89,7 @@ namespace SQL.Migrations
                                                          b.ToTable("Waiters");
                                                      });
 
-            modelBuilder.Entity("SQL.Models.PreOrder", b =>
+            modelBuilder.Entity("SQL.Models.PreOrders", b =>
                                                        {
                                                            b.HasOne("SQL.Models.Waiter", "Waiter")
                                                                    .WithMany()

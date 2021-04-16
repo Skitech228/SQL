@@ -24,12 +24,11 @@ namespace SQL.ViewModels
         private bool _isEditMode;
         private ObservableCollection<VisitorEntityViewModel> _visitors;
         private VisitorEntityViewModel _selectedVisitor;
-        private DelegateCommand _addSaleCommand;
-        private AsyncRelayCommand _removeSaleCommand;
-        private AsyncRelayCommand _applySaleChangesCommand;
+        private DelegateCommand _addVisitorCommand;
+        private AsyncRelayCommand _removeVisitorCommand;
+        private AsyncRelayCommand _applyVisitorChangesCommand;
         private DelegateCommand _changeEditModeCommand;
-        private AsyncRelayCommand _reloadSalesCommand;
-        private AsyncRelayCommand _writeSalesStatisticsCommand;
+        private AsyncRelayCommand _reloadVisitorsCommand;
 
         public VisitorsViewModel(IVisitorService salesService)
         {
@@ -40,23 +39,18 @@ namespace SQL.ViewModels
                     .Wait();
         }
 
-        public DelegateCommand AddVisitorCommand =>
-                _addSaleCommand ??= new DelegateCommand(OnAddVisitorCommandExecuted);
+        public DelegateCommand AddVisitorCommand => _addVisitorCommand ??= new DelegateCommand(OnAddVisitorCommandExecuted);
 
-        public AsyncRelayCommand RemoveVisitorCommand =>
-                _removeSaleCommand ??= new AsyncRelayCommand(OnRemoveHotelCategoryCommandExecuted,
-                                                             CanManipulateOnSale);
+        public AsyncRelayCommand RemoveVisitorCommand => _removeVisitorCommand ??= new AsyncRelayCommand(OnRemoveHotelCategoryCommandExecuted,
+                                                                                                      CanManipulateOnSale);
 
-        public AsyncRelayCommand ApplyVisitorChangesCommand =>
-                _applySaleChangesCommand ??= new AsyncRelayCommand(OnApplyHotelCategoryChangesCommandExecuted);
+        public AsyncRelayCommand ApplyVisitorChangesCommand => _applyVisitorChangesCommand ??= new AsyncRelayCommand(OnApplyHotelCategoryChangesCommandExecuted);
 
-        public DelegateCommand ChangeEditModeCommand =>
-                _changeEditModeCommand ??= new DelegateCommand(OnChangeEditModeCommandExecuted,
-                                                               CanManipulateOnSale)
-                        .ObservesProperty(() => SelectedVisitor);
+        public DelegateCommand ChangeEditModeCommand => _changeEditModeCommand ??= new DelegateCommand(OnChangeEditModeCommandExecuted,
+                                                                                                       CanManipulateOnSale)
+                                                                .ObservesProperty(() => SelectedVisitor);
 
-        public AsyncRelayCommand ReloadVisitorsCommand =>
-                _reloadSalesCommand ??= new AsyncRelayCommand(ReloadHotelCategoriesAsync);
+        public AsyncRelayCommand ReloadVisitorsCommand => _reloadVisitorsCommand ??= new AsyncRelayCommand(ReloadHotelCategoriesAsync);
 
         public ObservableCollection<VisitorEntityViewModel> Visitors
         {

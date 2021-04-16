@@ -10,23 +10,18 @@ using SQL.Services.Interfaces;
 
 namespace SQL.Services.Implementations
 {
-    internal class PreOrderService : IPreOrderService
+    public class PreOrderService : IPreOrderService
     {
         private readonly HotelContext _context;
 
-        private PreOrderService(HotelContext context) => _context = context;
+        public PreOrderService(HotelContext context) => _context = context;
 
-        #region Implementation of IPreOrderService
-
-        /// <inheritdoc />
         public async Task<bool> AddPreOrderAsync(PreOrder preOrder)
         {
             _context.PreOrders.Add(preOrder);
 
             return await _context.SaveChangesAsync() > 0;
         }
-
-        /// <inheritdoc />
         public async Task<bool> RemovePreOrderAsync(PreOrder preOrder)
         {
             _context.PreOrders.Attach(preOrder);
@@ -35,7 +30,6 @@ namespace SQL.Services.Implementations
             return await _context.SaveChangesAsync() > 0;
         }
 
-        /// <inheritdoc />
         public async Task<bool> UpdatePreOrderAsync(PreOrder preOrder)
         {
             _context.PreOrders.Attach(preOrder);
@@ -43,15 +37,10 @@ namespace SQL.Services.Implementations
 
             return await _context.SaveChangesAsync() > 0;
         }
-
-        /// <inheritdoc />
         public async Task<PreOrder> GetByIdAsync(int id) => await _context.PreOrders.FindAsync(id);
-
-        /// <inheritdoc />
         public async Task<IEnumerable<PreOrder>> GetAllPreOrdersAsync() => await _context.PreOrders
-                                                                                   .Include(x => _context.PreOrders)
+                                                                                   .Include(x => x.Waiter)
                                                                                    .ToListAsync();
 
-        #endregion
     }
 }

@@ -7,11 +7,13 @@ using SQL.Services.Interfaces;
 
 namespace SQL.ViewModels.Pages
 {
+    //INGECTION
     public class AdminPageViewModel : ViewModelBase
     {
-        private PreOrdersViewModel _preOrders;
+       // private PreOrdersViewModel _preOrders;IPreOrderService preOrder,
         private VisitorsViewModel _visitors;
         private WaitersViewModel _waiters;
+        private PreOrdersViewModel _preOrders;
 
         public AdminPageViewModel(IPreOrderService preOrder,
                                   IVisitorService visitor,

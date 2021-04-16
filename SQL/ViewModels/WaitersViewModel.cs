@@ -24,12 +24,11 @@ namespace SQL.ViewModels
         private bool _isEditMode;
         private ObservableCollection<WaiterEntityViewModel> _waiters;
         private WaiterEntityViewModel _selectedWaiter;
-        private DelegateCommand _addSaleCommand;
-        private AsyncRelayCommand _removeSaleCommand;
-        private AsyncRelayCommand _applySaleChangesCommand;
+        private DelegateCommand _addWaiterCommand;
+        private AsyncRelayCommand _removeWaiterCommand;
+        private AsyncRelayCommand _applyWaiterChangesCommand;
         private DelegateCommand _changeEditModeCommand;
-        private AsyncRelayCommand _reloadSalesCommand;
-        private AsyncRelayCommand _writeSalesStatisticsCommand;
+        private AsyncRelayCommand _reloadWaitersCommand;
 
         public WaitersViewModel(IWaiterService salesService)
         {
@@ -40,22 +39,18 @@ namespace SQL.ViewModels
                     .Wait();
         }
 
-        public DelegateCommand AddSaleCommand => _addSaleCommand ??= new DelegateCommand(OnAddSaleCommandExecuted);
+        public DelegateCommand AddWaiterCommand => _addWaiterCommand ??= new DelegateCommand(OnAddWaiterCommandExecuted);
 
-        public AsyncRelayCommand RemoveSaleCommand =>
-                _removeSaleCommand ??= new AsyncRelayCommand(OnRemoveToyCategoryCommandExecuted,
-                                                             CanManipulateOnSale);
+        public AsyncRelayCommand RemoveWaiterCommand => _removeWaiterCommand ??= new AsyncRelayCommand(OnRemoveToyCategoryCommandExecuted,
+                                                                                                   CanManipulateOnWaiter);
 
-        public AsyncRelayCommand ApplySaleChangesCommand =>
-                _applySaleChangesCommand ??= new AsyncRelayCommand(OnApplyToyCategoryChangesCommandExecuted);
+        public AsyncRelayCommand ApplyWaiterChangesCommand => _applyWaiterChangesCommand ??= new AsyncRelayCommand(OnApplyToyCategoryChangesCommandExecuted);
 
-        public DelegateCommand ChangeEditModeCommand =>
-                _changeEditModeCommand ??= new DelegateCommand(OnChangeEditModeCommandExecuted,
-                                                               CanManipulateOnSale)
-                        .ObservesProperty(() => SelectedWaiter);
+        public DelegateCommand ChangeEditModeCommand => _changeEditModeCommand ??= new DelegateCommand(OnChangeEditModeCommandExecuted,
+                                                                                                       CanManipulateOnWaiter)
+                                                                .ObservesProperty(() => SelectedWaiter);
 
-        public AsyncRelayCommand ReloadSalesCommand =>
-                _reloadSalesCommand ??= new AsyncRelayCommand(ReloadHotelCategoriesAsync);
+        public AsyncRelayCommand ReloadWaitersCommand => _reloadWaitersCommand ??= new AsyncRelayCommand(ReloadHotelCategoriesAsync);
 
         public ObservableCollection<WaiterEntityViewModel> Waiters
         {
@@ -69,7 +64,7 @@ namespace SQL.ViewModels
             set
             {
                 Set(ref _selectedWaiter, value);
-                RemoveSaleCommand.RaiseCanExecuteChanged();
+                RemoveWaiterCommand.RaiseCanExecuteChanged();
             }
         }
 
@@ -79,11 +74,11 @@ namespace SQL.ViewModels
             set => Set(ref _isEditMode, value);
         }
 
-        private bool CanManipulateOnSale() => SelectedWaiter is not null;
+        private bool CanManipulateOnWaiter() => SelectedWaiter is not null;
 
         private void OnChangeEditModeCommandExecuted() => IsEditMode = !IsEditMode;
 
-        private void OnAddSaleCommandExecuted()
+        private void OnAddWaiterCommandExecuted()
         {
             Waiters.Insert(0,
                            new WaiterEntityViewModel(new Waiter

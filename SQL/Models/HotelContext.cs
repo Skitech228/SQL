@@ -21,9 +21,5 @@ namespace SQL.Models
         {
             optionsBuilder.UseSqlite("DataSource=Hotel.db");
         }
-
-        #region Overrides of DbContext
-
-        #endregion
     }
 }

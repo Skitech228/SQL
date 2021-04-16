@@ -10,11 +10,11 @@ using SQL.Services.Interfaces;
 
 namespace SQL.Services.Implementations
 {
-    internal class VisitorService : IVisitorService
+    public class VisitorService : IVisitorService
     {
         private readonly HotelContext _context;
 
-        private VisitorService(HotelContext context) => _context = context;
+        public VisitorService(HotelContext context) => _context = context;
 
         #region Implementation of IPreOrderService
 
@@ -49,7 +49,7 @@ namespace SQL.Services.Implementations
 
         /// <inheritdoc />
         public async Task<IEnumerable<Visitor>> GetAllVisitorsAsync() => await _context.Visitors
-                                                                                 .Include(x => _context.PreOrders)
+                                                                                 .Include(x => x.Waiter)
                                                                                  .ToListAsync();
 
         #endregion
